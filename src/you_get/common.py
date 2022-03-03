@@ -405,6 +405,8 @@ def urlopen_with_retry(*args, **kwargs):
                 ctx.verify_mode = ssl.CERT_NONE
                 return request.urlopen(*args, context=ctx, **kwargs)
             else:
+                # lsy 能否在这里 关闭代理？
+                # request.ProxyHandler({})
                 return request.urlopen(*args, **kwargs)
         except socket.timeout as e:
             logging.debug('request attempt %s timeout' % str(i + 1))

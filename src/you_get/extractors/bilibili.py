@@ -270,6 +270,14 @@ class Bilibili(VideoExtractor):
                 if 'dash' in playinfo['data']:
                     audio_size_cache = {}
                     for video in playinfo['data']['dash']['video']:
+
+                        print("========= " + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) + " =========")
+                        print(video['id']     )
+                        print(video['mimeType']     )
+                        print(video['codecs'] )
+                        print(video['codecid'])
+                        print(self.dash_streams.__contains__(format_id))
+
                         # prefer the latter codecs!
                         s = self.stream_qualities[video['id']]
                         format_id = 'dash-' + s['id']  # prefix
@@ -290,11 +298,17 @@ class Bilibili(VideoExtractor):
                                 audio_size_cache[audio_quality] = self.url_size(audio_baseurl, headers=self.bilibili_headers(referer=self.url))
                             size += audio_size_cache[audio_quality]
 
-                            self.dash_streams[format_id] = {'container': container, 'quality': desc,
-                                                            'src': [[baseurl], [audio_baseurl]], 'size': size}
+
+                            # lsy 解决方式1: prefer the former codecs!
+                            # if not self.dash_streams.__contains__(format_id):
+
+                            # lsy 解决方式2：剔除 hev 格式
+                            if not video['codecs'].__contains__('hev'):
+                                self.dash_streams[format_id] = {'type': 'A', 'container': container, 'quality': desc,
+                                                                'src': [[baseurl], [audio_baseurl]], 'size': size, 'codecs': video['codecs']}
                         else:
-                            self.dash_streams[format_id] = {'container': container, 'quality': desc,
-                                                            'src': [[baseurl]], 'size': size}
+                            self.dash_streams[format_id] = {'type': 'V', 'container': container, 'quality': desc,
+                                                            'src': [[baseurl]], 'size': size, 'codecs': video['codecs']}
 
             # get danmaku
             self.danmaku = get_content('http://comment.bilibili.com/%s.xml' % cid)
@@ -372,8 +386,10 @@ class Bilibili(VideoExtractor):
                                 break
                         size += url_size(audio_baseurl, headers=self.bilibili_headers(referer=self.url))
 
-                        self.dash_streams[format_id] = {'container': container, 'quality': desc,
-                                                        'src': [[baseurl], [audio_baseurl]], 'size': size}
+                        # lsy 解决方式2：剔除 hev 格式
+                        if not video['codecs'].__contains__('hev'):
+                            self.dash_streams[format_id] = {'container': container, 'quality': desc,
+                                                            'src': [[baseurl], [audio_baseurl]], 'size': size}
 
             # get danmaku
             self.danmaku = get_content('http://comment.bilibili.com/%s.xml' % cid)

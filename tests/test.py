@@ -40,6 +40,19 @@ class YouGetTests(unittest.TestCase):
     def test_acfun(self):
         acfun.download('https://www.acfun.cn/v/ac11701912', info_only=True)
 
+    def test_bilibili(self):
+        bilibili.download('https://www.bilibili.com/video/BV1jb4y1y7ko',
+                          info_only=False,
+                          output_dir="E:/003_workspace/PyCharm_CE_2021.3.2",
+                          merge=True,
+                          )
+        # bilibili.download('https://www.bilibili.com/bangumi/play/ss37542',
+        #                   info_only=False,
+        #                   output_dir="E:/003_workspace/PyCharm_CE_2021.3.2",
+        #                   merge=True,
+        #                   )
+        print(123)
+
     #def test_soundcloud(self):
         ## single song
         #soundcloud.download(
