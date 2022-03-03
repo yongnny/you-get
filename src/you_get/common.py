@@ -21,6 +21,7 @@ from .util.git import get_version
 from .util.strings import get_filename, unescape_html
 from . import json_output as json_output_
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer,encoding='utf8')
 
 SITES = {
     '163'              : 'netease',
@@ -672,6 +673,7 @@ def url_save(
                         )
                     else:
                         log.w(
+                            # lsy
                             'Skipping {}: file already exists'.format(
                                 tr(os.path.basename(filepath))
                             )
@@ -995,6 +997,7 @@ def download_urls(
             if skip_existing_file_size_check:
                 log.w('Skipping %s without checking size: file already exists' % output_filepath)
             else:
+                # lsy
                 log.w('Skipping %s: file already exists' % output_filepath)
             print()
             return
