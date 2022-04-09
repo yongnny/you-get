@@ -408,6 +408,7 @@ def urlopen_with_retry(*args, **kwargs):
             else:
                 # lsy 能否在这里 关闭代理？
                 # request.ProxyHandler({})
+                logging.debug("======== full_url ========> " + args[0].full_url)
                 return request.urlopen(*args, **kwargs)
         except socket.timeout as e:
             logging.debug('request attempt %s timeout' % str(i + 1))

@@ -368,6 +368,18 @@ class Bilibili(VideoExtractor):
                 # DASH formats
                 if 'dash' in playinfo['result']:
                     for video in playinfo['result']['dash']['video']:
+                        # lsy_20220410  =========>
+                        # log.w("========= " + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) + " =========")
+                        # log.w(video['id']     )
+                        # log.w(video['mimeType']     )
+                        # log.w(video['codecs'] )
+                        # log.w(video['codecid'])
+
+                        # 这个 CDN 域名 upos-sz-mirrorbs 无法连通，会导致程序报错中断，所以剔除
+                        if video['baseUrl'].find("upos-sz-mirrorbs") > 0:
+                            continue
+                        # lsy_20220410  <=========
+
                         # playinfo['result']['quality'] does not reflect the correct quality of DASH stream
                         quality = self.height_to_quality(video['height'], video['id'])  # convert height to quality code
                         s = self.stream_qualities[quality]
