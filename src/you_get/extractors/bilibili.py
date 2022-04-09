@@ -374,10 +374,6 @@ class Bilibili(VideoExtractor):
                         # log.w(video['mimeType']     )
                         # log.w(video['codecs'] )
                         # log.w(video['codecid'])
-
-                        # 这个 CDN 域名 upos-sz-mirrorbs 无法连通，会导致程序报错中断，所以剔除
-                        if video['baseUrl'].find("upos-sz-mirrorbs") > 0:
-                            continue
                         # lsy_20220410  <=========
 
                         # playinfo['result']['quality'] does not reflect the correct quality of DASH stream
@@ -388,7 +384,16 @@ class Bilibili(VideoExtractor):
                         desc = s['desc']
                         audio_quality = s['audio_quality']
                         baseurl = video['baseUrl']
+
+                        # lsy_20220410  =========>
+                        # 这个 CDN 域名 upos-sz-mirrorbs 无法连通，会导致程序报错中断，所以剔除
+                        if baseurl.find("upos-sz-mirrorbs") > 0:
+                            continue
+                        # lsy_20220410  <=========
+
                         size = url_size(baseurl, headers=self.bilibili_headers(referer=self.url))
+
+
 
                         # find matching audio track
                         audio_baseurl = playinfo['result']['dash']['audio'][0]['baseUrl']
@@ -396,7 +401,15 @@ class Bilibili(VideoExtractor):
                             if int(audio['id']) == audio_quality:
                                 audio_baseurl = audio['baseUrl']
                                 break
+
+                        # lsy_20220410  =========>
+                        # 这个 CDN 域名 upos-sz-mirrorbs 无法连通，会导致程序报错中断，所以剔除
+                        if audio_baseurl.find("upos-sz-mirrorbs") > 0:
+                            continue
+                        # lsy_20220410  <=========
+
                         size += url_size(audio_baseurl, headers=self.bilibili_headers(referer=self.url))
+
 
                         # lsy 解决方式2：剔除 hev 格式
                         if not video['codecs'].__contains__('hev'):
